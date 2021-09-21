@@ -24,18 +24,19 @@ public class PlayerController {
 
     @Autowired
     public PlayerController(PlayerService playerService) {
+
         this.playerService = playerService;
     }
     @GetMapping(value = "/rest/players")
     public ResponseEntity<List<Player>> read(@RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize, @RequestParam Map<String,String> allParams) {
-        final List<Player> players = (List<Player>) playerService.findAllPlayersByParams(allParams,pageNumber,pageSize);
+        final List<Player> players = playerService.findAllPlayersByParams(allParams,pageNumber,pageSize);
         return players != null
                 ? new ResponseEntity<>(players, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     @GetMapping(value = "/rest/players/count")
     public ResponseEntity<?> count(@RequestParam Map<String,String> allParams) {
-        final List<Player> players = (List<Player>) playerService.findAllPlayersByParams(allParams,Optional.of(0),Optional.of(Integer.MAX_VALUE));
+        final List<Player> players = playerService.findAllPlayersByParams(allParams,Optional.of(0),Optional.of(Integer.MAX_VALUE));
         return players != null &&  !players.isEmpty()
                 ? new ResponseEntity<>(players.size(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);

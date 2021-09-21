@@ -2,6 +2,7 @@ package com.game.repository;
 
 import com.game.controller.PlayerOrder;
 import com.game.entity.Player;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -20,6 +21,7 @@ public class CustomizedPlayerImpl implements CustomizedPlayer {
         String queryString = "FROM Player Where id = " + id;
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Query<Player> query = session.createQuery(queryString, Player.class);
+        session.close();
         return query.uniqueResultOptional();
     }
 
@@ -54,6 +56,7 @@ public class CustomizedPlayerImpl implements CustomizedPlayer {
     public List findAllPlayers() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         List<Player> players = session.createQuery("From Player").list();
+        session.close();
         return players;
     }
 
@@ -79,6 +82,7 @@ public class CustomizedPlayerImpl implements CustomizedPlayer {
         for (Player player: players) {
             player.setBirthdayTimezero();
         }
+        session.close();
         return players;
     }
     private String buildQueryString(Map<String, String> allParams){

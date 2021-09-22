@@ -15,8 +15,7 @@ public class HibernateSessionFactoryUtil {
             try {
                 Configuration configuration = new Configuration().configure();
                 configuration.addAnnotatedClass(Player.class);
-                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-                sessionFactory = configuration.buildSessionFactory(builder.build());
+                sessionFactory = configuration.buildSessionFactory();
 
             } catch (Exception e) {
                 System.out.println("Исключение!" + e);

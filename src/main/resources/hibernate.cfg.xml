@@ -10,15 +10,14 @@
 
 <hibernate-configuration>
     <session-factory>
-        <property name="connection.driver_class">com.mysql.jdbc.Driver</property> <!-- DB Driver -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property> <!-- DB Driver -->
         <property name="connection.url">jdbc:mysql://localhost:3306/rpg?serverTimezone=UTC&amp;useSSL=false</property> <!-- BD Mane -->
         <property name="connection.username">root</property> <!-- DB User -->
         <property name="connection.password">root</property> <!-- DB Password -->
-        <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property> <!-- DB Dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property> <!-- DB Dialect -->
         <property name="hibernate.default_schema">rpg</property>
         <property name="hibernate.jdbc.time_zone">UTC</property>
-        <property name="show_sql">true</property> <!-- Show SQL in console -->
-        <property name="format_sql">true</property> <!-- Show SQL formatted -->
+
 
     </session-factory>
 </hibernate-configuration>

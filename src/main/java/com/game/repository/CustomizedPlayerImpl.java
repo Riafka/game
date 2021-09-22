@@ -3,9 +3,11 @@ package com.game.repository;
 import com.game.controller.PlayerOrder;
 import com.game.entity.Player;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -14,57 +16,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class CustomizedPlayerImpl implements CustomizedPlayer {
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     public Optional<Player> findPlayer(Long id) {
         String queryString = "FROM Player Where id = " + id;
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Query<Player> query = session.createQuery(queryString, Player.class);
-        session.close();
-        return query.uniqueResultOptional();
+        Player player = entityManager.find(Player.class,id);
+        Optional<Player> result = Optional.of(player);
+        return result;
     }
 
     @Override
     public void savePlayer(Object Player) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction tx1 = session.beginTransaction();
-        session.save(Player);
-        tx1.commit();
-        session.close();
+        entityManager.getTransaction().begin();
+        entityManager.persist(Player);
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public void deletePlayer(Object Player) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction tx1 = session.beginTransaction();
-        session.delete(Player);
-        tx1.commit();
-        session.close();
+        entityManager.getTransaction().begin();
+        entityManager.remove(Player);
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public void updatePlayer(Object Player) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction tx1 = session.beginTransaction();
-        session.update(Player);
-        tx1.commit();
-        session.close();
+        entityManager.getTransaction().begin();
+        entityManager.persist(Player);
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public List findAllPlayers() {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        List<Player> players = session.createQuery("From Player").list();
-        session.close();
+        List<Player> players = entityManager.createQuery("From Player").getResultList();
         return players;
     }
 
     @Override
     public List findAllPlayersByParams(Map allParams, Optional pageNumber, Optional pageSize) {
         String queryString = buildQueryString(allParams);
-
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Query<Player> query = session.createQuery(queryString, Player.class);
+        Query query = entityManager.createQuery(queryString);
 
         int page = 0;
         if (pageNumber.isPresent()){
@@ -77,11 +72,7 @@ public class CustomizedPlayerImpl implements CustomizedPlayer {
         query.setFirstResult(page*maxResult);
         query.setMaxResults(maxResult);
 
-        List<Player> players = query.list();
-        for (Player player: players) {
-            player.setBirthdayTimezero();
-        }
-        session.close();
+        List<Player> players = query.getResultList();
         return players;
     }
     private String buildQueryString(Map<String, String> allParams){

@@ -40,12 +40,7 @@ public class Player {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
-    public void setBirthdayTimezero(){
-       LocalDate localDate = Instant.ofEpochMilli(this.birthday.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-        this.birthday = java.util.Date.from(localDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant());
-    }
+
     public void setNameFromFront(String name) throws Exception{
         if (name == null|| name.isEmpty() || name.length() > 12){
             throw new Exception();
